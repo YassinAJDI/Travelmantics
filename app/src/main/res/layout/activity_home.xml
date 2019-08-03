@@ -14,4 +14,5 @@
             app:navGraph="@navigation/navigation_graph"
             app:defaultNavHost="true"
             android:id="@+id/fragment"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
