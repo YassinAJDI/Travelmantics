@@ -8,7 +8,7 @@ data class TravelDeal(
     val id: String,
     val title: String,
     val description: String,
-    val prince: String,
+    val price: String,
     val imageUrl: String
 ) {
 }
