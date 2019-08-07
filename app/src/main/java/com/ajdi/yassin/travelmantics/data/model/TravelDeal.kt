@@ -1,4 +1,4 @@
-package com.ajdi.yassin.travelmantics
+package com.ajdi.yassin.travelmantics.data.model
 
 /**
  * @author Yassin Ajdi
