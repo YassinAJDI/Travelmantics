@@ -1,18 +1,20 @@
 package com.ajdi.yassin.travelmantics.ui.dealslist
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.ajdi.yassin.travelmantics.data.TravelDealsRepository
+import com.ajdi.yassin.travelmantics.utils.TravelDealsQueryResults
 
 
 /**
  * @author Yassin Ajdi
  * @since 8/5/2019.
  */
-class DealsListViewModel: ViewModel() {
-//    private val TRAVEL_DEALS_REF = FirebaseDatabase.getInstance().getReference("/travel_deals")
-//
-//    private val liveData = RealtimeDatabaseQueryLiveData(TRAVEL_DEALS_REF)
+class DealsListViewModel : ViewModel() {
 
-//    fun getDataSnapshotLiveData(): LiveData<DataSnapshot> {
-//        return liveData
-//    }
+    private val travelDealsLiveData = TravelDealsRepository().getTravelDeals()
+
+    fun getTravelDeals(): LiveData<TravelDealsQueryResults> {
+        return travelDealsLiveData
+    }
 }

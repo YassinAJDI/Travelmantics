@@ -21,7 +21,7 @@ class TravelDealsRepository : ITravelDealsRepository {
             Function<DataSnapshotOrException, QueryResultsOrException<TravelDeal, Exception>> { input ->
                 val (snapshot, exception) = input
                 when {
-                    snapshot != null -> {
+                    snapshot != null -> try {
                         val items = snapshot.children.map { child ->
                             val item = TravelDealSnapshotDeserializer().deserialize(child)
                             object : QueryItem<TravelDeal> {
@@ -32,6 +32,8 @@ class TravelDealsRepository : ITravelDealsRepository {
                             }
                         }
                         QueryResultsOrException(items, null)
+                    } catch (error: Exception) {
+                        QueryResultsOrException(null, error)
                     }
 
                     exception != null -> QueryResultsOrException(null, exception)
