@@ -43,7 +43,7 @@ class InsertFragment : Fragment() {
         }
 
         binding.buttonSave.setOnClickListener {
-            saveDeal()
+            saveDeal(dealId)
             Toast.makeText(activity, "Deal saved", Toast.LENGTH_LONG).show()
             cleanForm()
         }
@@ -64,8 +64,10 @@ class InsertFragment : Fragment() {
         edit_price.editText?.setText("")
     }
 
-    private fun saveDeal() {
+    private fun saveDeal(dealId: String?) {
         // Write a message to the database
+        val database = FirebaseDatabase.getInstance()
+        val travelDeals = database.getReference("travel_deals")
         val travelDeal = TravelDeal(
             "",
             edit_title.editText?.text.toString(),
@@ -73,9 +75,13 @@ class InsertFragment : Fragment() {
             edit_price.editText?.text.toString(),
             ""
         )
-        val database = FirebaseDatabase.getInstance()
-        val travelDeals = database.getReference("travel_deals")
-        travelDeals.push().setValue(travelDeal)
+        if (dealId != null) {
+            // edit deal
+            travelDeals.child(dealId).setValue(travelDeal)
+        } else {
+            // add new deal
+            travelDeals.push().setValue(travelDeal)
+        }
     }
 
 }
