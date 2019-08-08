@@ -14,7 +14,7 @@ class DealViewHolder(private val binding: ItemDealBinding, private val viewModel
     fun bind(deal: TravelDeal) {
         binding.textTitle.text = deal.title
         binding.root.setOnClickListener {
-            viewModel.openDealEvent(deal.id)
+            viewModel.openDealEvent(deal)
         }
         binding.executePendingBindings()
     }

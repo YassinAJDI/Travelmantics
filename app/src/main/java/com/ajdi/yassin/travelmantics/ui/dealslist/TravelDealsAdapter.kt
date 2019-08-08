@@ -7,14 +7,13 @@ import androidx.recyclerview.widget.ListAdapter
 import com.ajdi.yassin.travelmantics.data.model.TravelDeal
 import com.ajdi.yassin.travelmantics.databinding.ItemDealBinding
 import com.ajdi.yassin.travelmantics.utils.QueryItem
-import timber.log.Timber
 
 
 /**
  * @author Yassin Ajdi
  * @since 8/8/2019.
  */
-class TravelDealsAdapter(val viewModel: DealsListViewModel) : ListAdapter<QueryItem<TravelDeal>, DealViewHolder>(
+class TravelDealsAdapter(private val viewModel: DealsListViewModel) : ListAdapter<QueryItem<TravelDeal>, DealViewHolder>(
     object : DiffUtil.ItemCallback<QueryItem<TravelDeal>>() {
         override fun areItemsTheSame(oldItem: QueryItem<TravelDeal>, newItem: QueryItem<TravelDeal>): Boolean {
             return oldItem.id == newItem.id
@@ -26,14 +25,12 @@ class TravelDealsAdapter(val viewModel: DealsListViewModel) : ListAdapter<QueryI
     }
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealViewHolder {
-        Timber.d("onCreateViewHolder")
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemDealBinding.inflate(inflater, parent, false)
         return DealViewHolder(binding, viewModel)
     }
 
     override fun onBindViewHolder(holder: DealViewHolder, position: Int) {
-        Timber.d("onBindViewHolder")
         holder.bind(getItem(position).item)
     }
 }
