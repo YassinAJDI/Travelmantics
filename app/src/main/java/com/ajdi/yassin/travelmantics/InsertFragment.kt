@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.ajdi.yassin.travelmantics.data.model.TravelDeal
 import com.ajdi.yassin.travelmantics.databinding.FragmentInsertDealBinding
 import com.ajdi.yassin.travelmantics.ui.dealslist.DealsListViewModel
@@ -22,6 +23,8 @@ class InsertFragment : Fragment() {
 
     private lateinit var viewModel: DealsListViewModel
     private lateinit var binding: FragmentInsertDealBinding
+    private val database = FirebaseDatabase.getInstance()
+    private val travelDeals = database.getReference("travel_deals")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,11 +45,23 @@ class InsertFragment : Fragment() {
             populateUI(viewModel.selectedDeal)
         }
 
+        // add/edit deal button
         binding.buttonSave.setOnClickListener {
             saveDeal(dealId)
             Toast.makeText(activity, "Deal saved", Toast.LENGTH_LONG).show()
-            cleanForm()
+//            cleanForm()
+            backToDealsList()
         }
+        // delete deal
+        binding.buttonDelete.setOnClickListener {
+            deleteDeal(dealId)
+            Toast.makeText(activity, "Deal deleted", Toast.LENGTH_LONG).show()
+            backToDealsList()
+        }
+    }
+
+    private fun backToDealsList() {
+        findNavController().navigateUp()
     }
 
     private fun populateUI(deal: TravelDeal) {
@@ -66,8 +81,6 @@ class InsertFragment : Fragment() {
 
     private fun saveDeal(dealId: String?) {
         // Write a message to the database
-        val database = FirebaseDatabase.getInstance()
-        val travelDeals = database.getReference("travel_deals")
         val travelDeal = TravelDeal(
             "",
             edit_title.editText?.text.toString(),
@@ -81,6 +94,12 @@ class InsertFragment : Fragment() {
         } else {
             // add new deal
             travelDeals.push().setValue(travelDeal)
+        }
+    }
+
+    private fun deleteDeal(dealId: String?) {
+        if (dealId != null) {
+            travelDeals.child(dealId).removeValue()
         }
     }
 
