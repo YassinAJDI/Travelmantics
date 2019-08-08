@@ -12,9 +12,9 @@ import com.ajdi.yassin.travelmantics.utils.TravelDealsQueryResults
  */
 class DealsListViewModel : ViewModel() {
 
-    private val travelDealsLiveData = TravelDealsRepository().getTravelDeals()
+//    private val travelDealsLiveData = TravelDealsRepository().getTravelDeals()
 
     fun getTravelDeals(): LiveData<TravelDealsQueryResults> {
-        return travelDealsLiveData
+        return TravelDealsRepository().getTravelDeals()
     }
 }

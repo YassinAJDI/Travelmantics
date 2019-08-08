@@ -52,6 +52,9 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:5.0.0'
     implementation 'com.google.firebase:firebase-database:18.0.1'
 
+    // Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
     // Tests
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'

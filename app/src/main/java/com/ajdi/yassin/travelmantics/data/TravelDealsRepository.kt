@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.ajdi.yassin.travelmantics.data.model.TravelDeal
 import com.ajdi.yassin.travelmantics.utils.*
 import com.google.firebase.database.FirebaseDatabase
+import timber.log.Timber
 
 /**
  * @author Yassin Ajdi
@@ -16,14 +17,16 @@ class TravelDealsRepository : ITravelDealsRepository {
     private val travelDealsRef = database.getReference("/travel_deals")
 
     override fun getTravelDeals(): LiveData<TravelDealsQueryResults> {
+        Timber.d("getTravelDeals")
         val liveData = RealtimeDatabaseQueryLiveData(travelDealsRef)
         val deserializeDataSnapshotTransform =
             Function<DataSnapshotOrException, QueryResultsOrException<TravelDeal, Exception>> { input ->
                 val (snapshot, exception) = input
                 when {
                     snapshot != null -> try {
-                        val items = snapshot.children.map { child ->
+                        val items: List<QueryItem<TravelDeal>> = snapshot.children.map { child ->
                             val item = TravelDealSnapshotDeserializer().deserialize(child)
+                            Timber.d(item.toString())
                             object : QueryItem<TravelDeal> {
                                 override val item: TravelDeal
                                     get() = item
@@ -31,9 +34,10 @@ class TravelDealsRepository : ITravelDealsRepository {
                                     get() = child.key!!
                             }
                         }
+                        Timber.d("items count: ${items.size}")
                         QueryResultsOrException(items, null)
-                    } catch (error: Exception) {
-                        QueryResultsOrException(null, error)
+                    } catch (error: RuntimeException) {
+                        QueryResultsOrException<TravelDeal, Exception>(null, error)
                     }
 
                     exception != null -> QueryResultsOrException(null, exception)

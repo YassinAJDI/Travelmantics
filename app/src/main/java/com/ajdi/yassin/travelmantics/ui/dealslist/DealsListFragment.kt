@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.ajdi.yassin.travelmantics.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.ajdi.yassin.travelmantics.databinding.FragmentDealsListBinding
+import timber.log.Timber
 
 
 /**
@@ -17,62 +19,37 @@ import com.ajdi.yassin.travelmantics.R
  */
 class DealsListFragment : Fragment() {
 
+    private lateinit var binding: FragmentDealsListBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_deals_list, container, false)
-        populateUI()
-        return view
+        Timber.d("onCreateView")
+        binding = FragmentDealsListBinding.inflate(inflater, container, false)
+        setupListAdapter()
+        return binding.root
     }
 
-    private fun populateUI() {
+    private fun setupListAdapter() {
+        Timber.d("setupListAdapter")
         val viewModel = ViewModelProviders.of(this).get(DealsListViewModel::class.java)
         val travelDealsLiveData = viewModel.getTravelDeals()
+        // setup RecyclerView
+        val recyclerView = binding.recyclerDealList
+        val dealsAdapter = TravelDealsAdapter()
+        recyclerView.adapter = dealsAdapter
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+
+        // observe deals list
         travelDealsLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
+                Timber.d("travelDealsLiveData:data not null")
+                Timber.d(it.data?.get(1)?.item.toString())
                 // update the UI here with values in the snapshot
-                it.data
-                val deals = it.data
+                dealsAdapter.submitList(it.data)
             }
         })
-//        val database = FirebaseUtil.database
-//        val dealsReference = FirebaseUtil.dealsReference
-//        val dealsListener = object : ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                // Get Post object and use the values to update the UI
-//                val deals = dataSnapshot.getValue(TravelDeal::class.java)
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//                // Getting deals failed, log a message
-//                Log.w(javaClass.simpleName, "loadDeals:onCancelled", databaseError.toException())
-//            }
-//        }
-//        val dealsChildEventListener = object : ChildEventListener {
-//            override fun onCancelled(p0: DatabaseError) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            }
-//
-//            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            }
-//
-//            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            }
-//
-//            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            }
-//
-//            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-//                val deal = dataSnapshot.getValue(TravelDeal::class.java)
-//            }
-//
-//        }
-//        dealsReference.addValueEventListener(dealsListener)
-//        dealsReference.addChildEventListener(dealsChildEventListener)
     }
 
 }
