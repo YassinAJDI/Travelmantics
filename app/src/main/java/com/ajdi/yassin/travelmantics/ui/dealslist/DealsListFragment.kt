@@ -5,20 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ajdi.yassin.travelmantics.R
 import com.ajdi.yassin.travelmantics.databinding.FragmentDealsListBinding
+import com.ajdi.yassin.travelmantics.utils.EventObserver
 import timber.log.Timber
 
-
-/**
- * A simple [Fragment] subclass.
- *
- */
 class DealsListFragment : Fragment() {
 
+    private lateinit var viewModel: DealsListViewModel
     private lateinit var binding: FragmentDealsListBinding
 
     override fun onCreateView(
@@ -27,22 +27,29 @@ class DealsListFragment : Fragment() {
     ): View? {
         Timber.d("onCreateView")
         binding = FragmentDealsListBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProviders.of(this).get(DealsListViewModel::class.java)
         setupListAdapter()
+        setupNavigation()
         return binding.root
+    }
+
+    private fun setupNavigation() {
+        viewModel.getOpenDealEvent().observe(viewLifecycleOwner, EventObserver {
+            val bundle = bundleOf("deal_id" to it)
+            findNavController().navigate(R.id.action_deals_fragment_dest_to_insert_fragment_dest, bundle)
+        })
     }
 
     private fun setupListAdapter() {
         Timber.d("setupListAdapter")
-        val viewModel = ViewModelProviders.of(this).get(DealsListViewModel::class.java)
-        val travelDealsLiveData = viewModel.getTravelDeals()
         // setup RecyclerView
         val recyclerView = binding.recyclerDealList
-        val dealsAdapter = TravelDealsAdapter()
+        val dealsAdapter = TravelDealsAdapter(viewModel)
         recyclerView.adapter = dealsAdapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         // observe deals list
-        travelDealsLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.getTravelDeals().observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 Timber.d("travelDealsLiveData:data not null")
                 Timber.d(it.data?.get(1)?.item.toString())

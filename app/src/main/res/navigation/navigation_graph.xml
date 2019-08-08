@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/navigation_graph" app:startDestination="@id/deals_fragment_dest">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/deals_fragment_dest">
 
-    <fragment android:id="@+id/insert_fragment_dest"
-              android:name="com.ajdi.yassin.travelmantics.InsertFragment"
-              android:label="Insert Fragment"/>
     <fragment
         android:id="@+id/deals_fragment_dest"
         android:name="com.ajdi.yassin.travelmantics.ui.dealslist.DealsListFragment"
-        android:label="DealsListFragment" />
+        android:label="DealsListFragment">
+        <action
+            android:id="@+id/action_deals_fragment_dest_to_insert_fragment_dest"
+            app:destination="@id/insert_fragment_dest" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/insert_fragment_dest"
+        android:name="com.ajdi.yassin.travelmantics.InsertFragment"
+        android:label="Insert Fragment">
+        <argument
+            android:name="deal_id"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>
